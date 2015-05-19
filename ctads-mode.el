@@ -33,6 +33,11 @@
 ;;    them a small price for the awesome code editing functionality of
 ;;    CC Mode.
 ;;
+;;    (Note that CC Mode does provide support for line-oriented
+;;    languages (where statements can be terminated by EOL--AWK is an
+;;    example of such language), but implementing it for TADS3 will
+;;    require more work than I'm willing to do at the moment.)
+;;
 ;;    ctads-mode requires CC Mode.  It works with cc-mode 5.32.5,
 ;;    which is current at this time.
 
@@ -122,6 +127,22 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-decl-block-key
   ctads "\\(?:class\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
 
+;; c++-mode can confuse TADS3 object definitions with labels if the
+;; object name is immediately followed by colon (without any
+;; whitespace in between). So turn off the label support in c++-mode.
+;; It seems to be a good trade-off, since TADS3 doesn't have access
+;; labels (e.g `public') and 'goto' labels are rare anyway (an
+;; alternative would be to override the `c-forward-label' defun in
+;; cc-engine.el by adding TADS3-specific checks).
+(c-lang-defconst c-recognize-colon-labels
+  ctads nil)
+
+;; The following doesn't work as well as I hoped it would (TADS3
+;; nested object definitions can follow a property definition
+;; terminated by a semicolon).
+;(c-lang-defconst c-label-prefix-re
+;  ctads "\\(;\\)")
+
 ;; TADS3 doesn't support var declarations following declaration blocks
 ;; (e.g. \"foo\" in \"class Foo { ... } foo;\").
 (c-lang-defconst c-block-decls-with-vars
@@ -135,6 +156,60 @@ multiline string, aligning on the opening quote."
 ;; literals to make them multiline.
 (c-lang-defconst c-string-escaped-newlines
   ctads nil)
+
+;; No `public', `private' or `protected'.
+(c-lang-defconst c-protection-kwds
+  ctads nil)
+
+(c-lang-defconst c-has-bitfields
+  ctads nil)
+
+(c-lang-defconst c-modified-constant
+  ctads nil)
+
+(c-lang-defconst c-identifier-ops
+  ctads nil)
+
+(c-lang-defconst c-opt-identifier-concat-key
+  ctads nil)
+
+(c-lang-defconst c-opt-identifier-prefix-key
+  ctads nil)
+
+(c-lang-defconst c-after-id-concat-ops
+  ctads nil)
+
+(c-lang-defconst c-assignment-operators
+  ctads '("=" "*=" "/=" "%=" "+=" "-=" ">>=" "<<=" "&=" "^=" "|="))
+
+;; FIXME: TADS3 actually does support operator overloading.
+;; http://www.tads.org/t3doc/doc/sysman/opoverload.htm
+(c-lang-defconst c-overloadable-operators
+  ctads nil)
+
+;; FIXME: see above.
+(c-lang-defconst c-overloadable-operators-regexp
+  ctads nil)
+
+(c-lang-defconst c-primitive-type-kwds
+  ctads nil)
+
+(c-lang-defconst c-primitive-type-prefix-kwds
+  ctads nil)
+
+(c-lang-defconst c-typedef-kwds
+  ctads nil)
+
+(c-lang-defconst c-type-prefix-kwds
+  ctads nil)
+
+;; Not type modifiers, actually (TADS3 has no static typing), but this
+;; should do for font-locking purposes.
+(c-lang-defconst c-type-modifier-kwds
+  ctads '("local" "enum"))
+
+(c-lang-defconst c-class-decl-kwds
+  ctads '("class"))
 
 (defcustom ctads-prettify-multiline-strings t
   "*Whether to treat multiline strings as blocks of text,
