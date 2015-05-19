@@ -1,4 +1,4 @@
-;;; cc-mode.el --- major mode for editing TADS3, derived from CC Mode
+;;; ctads-mode.el --- major mode for editing TADS3, derived from CC Mode
 
 ;; Author:   George Katsitadze
 ;; Created:  May 2015
@@ -123,7 +123,7 @@ multiline string, aligning on the opening quote."
   ctads "\\(?:class\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
 
 ;; TADS3 doesn't support var declarations following declaration blocks
-;; (e.g. \"foo\" in \"class Foo { ... } foo;\")
+;; (e.g. \"foo\" in \"class Foo { ... } foo;\").
 (c-lang-defconst c-block-decls-with-vars
   ctads nil)
 
