@@ -127,6 +127,14 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-decl-block-key
   ctads "\\(?:class\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
 
+;; Used for the syntax parsing of inheritance lists and such.
+;; (e.g. \"Foo, Bar\" in \"myObject: Foo, Bar { ... }\").
+(c-lang-defconst c-class-key
+  ctads (c-lang-const c-decl-block-key))
+
+(c-lang-defconst c-class-decl-kwds
+  ctads '("class"))
+
 ;; c++-mode can confuse TADS3 object definitions with labels if the
 ;; object name is immediately followed by colon (without any
 ;; whitespace in between). So turn off the label support in c++-mode.
@@ -136,12 +144,14 @@ multiline string, aligning on the opening quote."
 ;; cc-engine.el by adding TADS3-specific checks).
 (c-lang-defconst c-recognize-colon-labels
   ctads nil)
-
-;; The following doesn't work as well as I hoped it would (TADS3
-;; nested object definitions can follow a property definition
-;; terminated by a semicolon).
-;(c-lang-defconst c-label-prefix-re
-;  ctads "\\(;\\)")
+;; Since we don't want label recognition, make sure nothing is treated
+;; as a label.
+(c-lang-defconst c-label-prefix-re
+  ctads "a^")
+(c-lang-defconst c-nonlabel-token-key
+  ctads ".*")
+(c-lang-defconst c-nonlabel-token-2-key
+  ctads ".*")
 
 ;; TADS3 doesn't support var declarations following declaration blocks
 ;; (e.g. \"foo\" in \"class Foo { ... } foo;\").
@@ -207,9 +217,6 @@ multiline string, aligning on the opening quote."
 ;; should do for font-locking purposes.
 (c-lang-defconst c-type-modifier-kwds
   ctads '("local" "enum"))
-
-(c-lang-defconst c-class-decl-kwds
-  ctads '("class"))
 
 (defcustom ctads-prettify-multiline-strings t
   "*Whether to treat multiline strings as blocks of text,
