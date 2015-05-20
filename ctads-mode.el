@@ -122,11 +122,11 @@ multiline string, aligning on the opening quote."
             (forward-char pos-in-line)))
     (c-indent-command)))
 
-;; Declaration blocks in TADS3 start with either `class' or a object
-;; name followed by a colon. For inline object defs it's `object',
-;; optionally followed by a colon and inhertiance list).
+;; Declaration blocks in TADS3 start with either `class', `modify' or
+;; a object name followed by a colon. For inline object defs it's
+;; `object', optionally followed by a colon and inhertiance list).
 (c-lang-defconst c-decl-block-key
-  ctads "\\(?:class\\|object\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
+  ctads "\\(?:class\\|modify\\|object\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
 
 ;; Used for the syntax parsing of inheritance lists and such.
 ;; (e.g. \"Foo, Bar\" in \"myObject: Foo, Bar { ... }\").
@@ -134,7 +134,7 @@ multiline string, aligning on the opening quote."
   ctads (c-lang-const c-decl-block-key))
 
 (c-lang-defconst c-class-decl-kwds
-  ctads '("class" "object"))
+  ctads '("class" "object" "modify"))
 
 ;; c++-mode can confuse TADS3 object definitions with labels if the
 ;; object name is immediately followed by colon (without any
