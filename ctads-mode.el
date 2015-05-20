@@ -149,10 +149,6 @@ multiline string, aligning on the opening quote."
 ;; as a label.
 (c-lang-defconst c-label-prefix-re
   ctads "a^")
-(c-lang-defconst c-nonlabel-token-key
-  ctads ".*")
-(c-lang-defconst c-nonlabel-token-2-key
-  ctads ".*")
 
 ;; TADS3 doesn't support var declarations following declaration blocks
 ;; (e.g. \"foo\" in \"class Foo { ... } foo;\").
