@@ -122,6 +122,9 @@ multiline string, aligning on the opening quote."
             (forward-char pos-in-line)))
     (c-indent-command)))
 
+(c-lang-defconst c-cpp-matchers
+  ctads nil)
+
 ;; Declaration blocks in TADS3 start with either `class', `modify',
 ;; `replace' or a object name followed by a colon. For inline object
 ;; defs it's `object', optionally followed by a colon and inhertiance
@@ -300,11 +303,46 @@ enabling auto-fill, indentation and paragraph formatting."
   :type 'boolean
   :group 'ctads)
 
+
+(defconst ctads-font-lock-keywords-1 (c-lang-const c-matchers-1 ctads)
+  "Minimal highlighting for CTADS mode.")
+
+(defconst ctads-font-lock-keywords-2 (c-lang-const c-matchers-2 ctads)
+  "Fast normal highlighting for CTADS mode.")
+
+(defconst ctads-font-lock-keywords-3 (c-lang-const c-matchers-3 ctads)
+  "Accurate normal highlighting for CTADS mode.")
+
+(defvar ctads-font-lock-keywords ctads-font-lock-keywords-3
+  "Default expressions to highlight in CTADS mode.")
+
 (defvar ctads-mode-syntax-table nil
   "Syntax table used in ctads-mode buffers.")
 (or ctads-mode-syntax-table
     (setq ctads-mode-syntax-table
 	  (funcall (c-lang-const c-make-mode-syntax-table ctads))))
+
+(defvar ctads-mode-abbrev-table nil
+  "Abbreviation table used in ctads-mode buffers.")
+(c-define-abbrev-table
+ 'ctads-mode-abbrev-table
+ ;; Keywords that if they occur first on a line might alter the
+ ;; syntactic context, and which therefore should trig reindentation
+ ;; when they are completed.
+ '(("else" "else" c-electric-continued-statement 0)
+   ("while" "while" c-electric-continued-statement 0)
+   ("catch" "catch" c-electric-continued-statement 0)
+   ("finally" "finally" c-electric-continued-statement 0)))
+
+(defvar ctads-mode-map (let ((map (c-make-inherited-keymap)))
+                         ;; Add bindings which are only useful for TADS3
+                         map)
+  "Keymap used in ctads-mode buffers.")
+
+(defcustom ctads-mode-hook nil
+  "*Hook called by `ctads-mode'."
+  :type 'hook
+  :group 'ctads)
 
 (defun ctads-mode ()
   "A major mode for editing TADS3 code based on CC Mode."
@@ -314,15 +352,14 @@ enabling auto-fill, indentation and paragraph formatting."
   (set-syntax-table ctads-mode-syntax-table)
   (setq major-mode 'ctads-mode
 	mode-name "CTADS"
-	local-abbrev-table c++-mode-abbrev-table
+	local-abbrev-table ctads-mode-abbrev-table
 	abbrev-mode t)
-  (use-local-map c++-mode-map)
+  (use-local-map ctads-mode-map)
   (c-init-language-vars ctads-mode)
-  (c-common-init 'c++-mode)
+  (c-common-init 'ctads-mode)
 ;  (easy-menu-add ctads-menu)
   (run-hooks 'c-mode-common-hook)
   (run-hooks 'ctads-mode-hook)
-
   (if ctads-prettify-multiline-strings
       (progn
         ;; Remove strings from the auto-fill ignore list.
