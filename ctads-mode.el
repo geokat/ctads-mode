@@ -122,11 +122,12 @@ multiline string, aligning on the opening quote."
             (forward-char pos-in-line)))
     (c-indent-command)))
 
-;; Declaration blocks in TADS3 start with either `class', `modify' or
-;; a object name followed by a colon. For inline object defs it's
-;; `object', optionally followed by a colon and inhertiance list).
+;; Declaration blocks in TADS3 start with either `class', `modify',
+;; `replace' or a object name followed by a colon. For inline object
+;; defs it's `object', optionally followed by a colon and inhertiance
+;; list).
 (c-lang-defconst c-decl-block-key
-  ctads "\\(?:class\\|modify\\|object\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
+  ctads "\\(?:class\\|modify\\|replace\\|object\\|[[:alnum:]_]+ *:\\)\\(?:[^[:alnum:]_]\\)")
 
 ;; Used for the syntax parsing of inheritance lists and such.
 ;; (e.g. \"Foo, Bar\" in \"myObject: Foo, Bar { ... }\").
@@ -134,7 +135,7 @@ multiline string, aligning on the opening quote."
   ctads (c-lang-const c-decl-block-key))
 
 (c-lang-defconst c-class-decl-kwds
-  ctads '("class" "object" "modify"))
+  ctads '("class" "object" "modify" "replace"))
 
 ;; c++-mode can confuse TADS3 object definitions with labels if the
 ;; object name is immediately followed by colon (without any
@@ -210,10 +211,88 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-type-prefix-kwds
   ctads nil)
 
-;; Not type modifiers, actually (TADS3 has no static typing), but this
-;; should do for font-locking purposes.
 (c-lang-defconst c-type-modifier-kwds
-  ctads '("local" "enum"))
+  ctads '("transient" "static" "intrinsic"))
+
+(c-lang-defconst c-brace-list-decl-kwds
+  ctads nil)
+
+(c-lang-defconst c-other-block-decl-kwds
+  ctads nil)
+
+(c-lang-defconst c-typedef-decl-kwds
+  ctads '("class" "modify" "replace"))
+
+(c-lang-defconst c-typeless-decl-kwds
+  ctads '("class" "modify" "replace"))
+
+(c-lang-defconst c-colon-type-list-kwds
+  ctads '("class" "object"))
+
+(c-lang-defconst c-modifier-kwds
+  ctads '("local" "enum" "transient" "static"))
+
+(c-lang-defconst c-decl-hangon-kwds
+  ctads nil)
+
+(c-lang-defconst c-nonsymbol-sexp-kwds
+  ctads nil)
+
+(c-lang-defconst c-type-list-kwds
+  ctads nil)
+
+(c-lang-defconst c-ref-list-kwds
+  ctads nil)
+
+(c-lang-defconst c-paren-nontype-kwds
+  ctads nil)
+
+(c-lang-defconst c-paren-type-kwds
+  ctads nil)
+
+(c-lang-defconst c-block-stmt-1-kwds
+  "Statement keywords followed directly by a substatement."
+  ctads '("do" "else" "try" "finally"))
+
+(c-lang-defconst c-block-stmt-2-kwds
+  "Statement keywords followed by a paren sexp and then by a substatement."
+  ctads '("for" "if" "switch" "while" "foreach" "catch"))
+
+(c-lang-defconst c-simple-stmt-kwds
+  "Statement keywords followed by an expression or nothing."
+  ctads '("break" "continue" "goto" "return" "exit" "inherited" "throw"))
+
+(c-lang-defconst c-asm-stmt-kwds
+  ctads nil)
+
+(c-lang-defconst c-before-label-kwds
+  "Keywords that might be followed by a label identifier."
+  ctads '("goto" "break" "continue"))
+
+(c-lang-defconst c-constant-kwds
+  "Keywords for constants."
+  ctads '("true" "nil"))
+
+(c-lang-defconst c-primary-expr-kwds
+  "Keywords besides constants and operators that start primary expressions."
+  ctads '("self"))
+
+(c-lang-defconst c-lambda-kwds
+  "Keywords that start lambda constructs, i.e. function definitions in
+expressions."
+  ctads '("function"))
+
+(c-lang-defconst c-inexpr-class-kwds
+  "Keywords that can start classes inside expressions."
+  ctads '("object"))
+
+(c-lang-defconst c-bitfield-kwds
+  "Keywords that can introduce bitfields."
+  ctads nil)
+
+(c-lang-defconst c-other-kwds
+  "Keywords not accounted for by any other `*-kwds' language constant."
+  ctads '("token" "property"))
 
 (defcustom ctads-prettify-multiline-strings t
   "*Whether to treat multiline strings as blocks of text,
