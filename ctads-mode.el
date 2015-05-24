@@ -217,6 +217,14 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-type-modifier-kwds
   ctads '("transient" "static" "intrinsic"))
 
+(c-lang-defconst c-type-decl-prefix-key
+  ctads (concat "\\("
+                "[*\(]"
+                "\\|"
+                (regexp-opt (c-lang-const c-type-modifier-kwds) t) "\\>"
+                "\\)"
+                "\\([^=]\\|$\\)"))
+
 (c-lang-defconst c-brace-list-decl-kwds
   ctads nil)
 
@@ -302,6 +310,18 @@ expressions."
 enabling auto-fill, indentation and paragraph formatting."
   :type 'boolean
   :group 'ctads)
+
+;;zzz
+;(c-lang-defconst c-cpp-matchers
+;  ctads nil)
+;(c-lang-defconst c-basic-matchers-before
+;  ctads nil)
+;(c-lang-defconst c-basic-matchers-after
+;  ctads nil)
+;(c-lang-defconst c-simple-decl-matchers
+;  ctads nil)
+;(c-lang-defconst c-complex-decl-matchers
+;  ctads nil)
 
 
 (defconst ctads-font-lock-keywords-1 (c-lang-const c-matchers-1 ctads)
