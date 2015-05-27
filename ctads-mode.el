@@ -230,6 +230,9 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-colon-type-list-kwds
   ctads '("class" "object"))
 
+(c-lang-defconst c-modifier-kwds
+  ctads nil)
+
 (c-lang-defconst c-decl-hangon-kwds
   ctads nil)
 
