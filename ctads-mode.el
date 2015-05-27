@@ -211,15 +211,8 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-type-prefix-kwds
   ctads nil)
 
-(c-lang-defconst c-type-modifier-kwds
-  ctads '("transient" "static" "intrinsic"))
-
 (c-lang-defconst c-type-decl-prefix-key
-  ctads (concat "\\("
-                "[*\(]"
-                "\\|"
-                (regexp-opt (c-lang-const c-type-modifier-kwds) t) "\\>"
-                "\\)"
+  ctads (concat "\\([*\(]\\)"
                 "\\([^=]\\|$\\)"))
 
 (c-lang-defconst c-brace-list-decl-kwds
@@ -236,9 +229,6 @@ multiline string, aligning on the opening quote."
 
 (c-lang-defconst c-colon-type-list-kwds
   ctads '("class" "object"))
-
-(c-lang-defconst c-modifier-kwds
-  ctads '("local" "enum" "transient" "static"))
 
 (c-lang-defconst c-decl-hangon-kwds
   ctads nil)
@@ -300,7 +290,7 @@ expressions."
 
 (c-lang-defconst c-other-kwds
   "Keywords not accounted for by any other `*-kwds' language constant."
-  ctads '("token" "property"))
+  ctads '("token" "property" "local" "enum" "transient" "static" "intrinsic"))
 
 (defcustom ctads-prettify-multiline-strings t
   "*Whether to treat multiline strings as blocks of text,
