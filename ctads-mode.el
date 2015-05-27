@@ -323,10 +323,13 @@ enabling auto-fill, indentation and paragraph formatting."
     ,`(,(concat "\\<" (c-lang-const c-regular-keywords-regexp))
        1 font-lock-keyword-face)
 
+    ;; Fontify property names in class/object definitions.
     ,(byte-compile
       (lambda (limit)
         (while (re-search-forward
-                "\\([[:alpha:]_]+[[:alnum:]_]*\\)[ \n\r\t]*:"
+                ;; The ?: catches object names. The ?= is for property
+                ;; initializations.
+                "\\([[:alpha:]_]+[[:alnum:]_]*\\)[ \n\r\t]*\\(:\\|=\\)"
                 limit t)
           (let ((mb1 (match-beginning 1))
                 (me1 (match-end 1)))
@@ -335,7 +338,8 @@ enabling auto-fill, indentation and paragraph formatting."
               (and (c-at-toplevel-p)
                    (not (get-text-property mb1 'face))
                    (c-put-font-lock-face mb1 me1
-                                         font-lock-variable-name-face)))))))))
+                                         font-lock-variable-name-face)))))))
+    ))
 
 (defconst ctads-font-lock-keywords-1 (c-lang-const c-matchers-1 ctads)
   "Minimal highlighting for CTADS mode.")
