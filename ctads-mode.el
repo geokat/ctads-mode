@@ -122,9 +122,6 @@ multiline string, aligning on the opening quote."
             (forward-char pos-in-line)))
     (c-indent-command)))
 
-(c-lang-defconst c-cpp-matchers
-  ctads nil)
-
 ;; Declaration blocks in TADS3 start with either `class', `modify',
 ;; `replace' or a object name followed by a colon. For inline object
 ;; defs it's `object', optionally followed by a colon and inhertiance
@@ -311,18 +308,34 @@ enabling auto-fill, indentation and paragraph formatting."
   :type 'boolean
   :group 'ctads)
 
-;;zzz
-;(c-lang-defconst c-cpp-matchers
-;  ctads nil)
-;(c-lang-defconst c-basic-matchers-before
-;  ctads nil)
-;(c-lang-defconst c-basic-matchers-after
-;  ctads nil)
-;(c-lang-defconst c-simple-decl-matchers
-;  ctads nil)
-;(c-lang-defconst c-complex-decl-matchers
-;  ctads nil)
+(c-lang-defconst c-basic-matchers-before
+  ctads
+  `(
+    ;; Fontify keyword constants.
+    ,@(when (c-lang-const c-constant-kwds)
+        (let ((re
+               (c-make-keywords-re
+                   nil (c-lang-const c-constant-kwds))))
+          `((eval . (list ,(concat "\\<\\(" re "\\)\\>")
+                          1 c-constant-face-name)))))
 
+    ;; Fontify all keywords except the primitive types.
+    ,`(,(concat "\\<" (c-lang-const c-regular-keywords-regexp))
+       1 font-lock-keyword-face)
+
+    ,(byte-compile
+      (lambda (limit)
+        (while (re-search-forward
+                "\\([[:alpha:]_]+[[:alnum:]_]*\\)[ \n\r\t]*:"
+                limit t)
+          (let ((mb1 (match-beginning 1))
+                (me1 (match-end 1)))
+            (unless
+                (c-skip-comments-and-strings limit)
+              (and (c-at-toplevel-p)
+                   (not (get-text-property mb1 'face))
+                   (c-put-font-lock-face mb1 me1
+                                         font-lock-variable-name-face)))))))))
 
 (defconst ctads-font-lock-keywords-1 (c-lang-const c-matchers-1 ctads)
   "Minimal highlighting for CTADS mode.")
