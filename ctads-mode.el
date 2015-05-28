@@ -276,12 +276,15 @@ multiline string, aligning on the opening quote."
 
 (c-lang-defconst c-primary-expr-kwds
   "Keywords besides constants and operators that start primary expressions."
-  ctads '("self"))
+  ctads '("self"
+          "definingobj"
+          "targetobj"
+          "targetprop"))
 
 (c-lang-defconst c-lambda-kwds
   "Keywords that start lambda constructs, i.e. function definitions in
 expressions."
-  ctads '("function"))
+  ctads '("function" "method"))
 
 (c-lang-defconst c-inexpr-class-kwds
   "Keywords that can start classes inside expressions."
