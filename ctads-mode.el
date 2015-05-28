@@ -76,6 +76,16 @@ format them to look nice in code, with paragraphs and alignment."
     (if (nth 3 (syntax-ppss))
         (ctads-string-fill-prefix))))
 
+;; Monkey-patch c-forward-label: TADS3 only supports labels in
+;; functions (while c++-mode also supports access labels in toplevel).
+(defadvice c-forward-label (around ctads-forward-label-advice
+                                   activate preactivate)
+  (setq ad-return-value
+        (if (and (equal major-mode 'ctads-mode)
+                 (c-at-toplevel-p))
+            nil
+          ad-do-it)))
+
 (defun ctads-string-fill-prefix ()
   "Build the fill prefix for a continuing line in a multiline
 string. The prefix consists of spaces, so that lines in multiline
@@ -137,19 +147,8 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-class-decl-kwds
   ctads '("class" "object" "modify" "replace"))
 
-;; c++-mode can confuse TADS3 object definitions with labels if the
-;; object name is immediately followed by colon (without any
-;; whitespace in between). So turn off the label support in c++-mode.
-;; It seems to be a good trade-off, since TADS3 doesn't have access
-;; labels (e.g `public') and 'goto' labels are rare anyway (an
-;; alternative would be to override the `c-forward-label' defun in
-;; cc-engine.el by adding TADS3-specific checks).
 (c-lang-defconst c-recognize-colon-labels
-  ctads nil)
-;; Since we don't want label recognition, make sure nothing is treated
-;; as a label.
-(c-lang-defconst c-label-prefix-re
-  ctads "a^")
+  ctads t)
 
 ;; TADS3 doesn't support var declarations following declaration blocks
 ;; (e.g. \"foo\" in \"class Foo { ... } foo;\").
