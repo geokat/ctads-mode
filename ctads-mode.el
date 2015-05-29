@@ -227,7 +227,7 @@ multiline string, aligning on the opening quote."
   ctads '("class" "modify" "replace"))
 
 (c-lang-defconst c-colon-type-list-kwds
-  ctads '("class" "object"))
+  ctads '("class" "transient"))
 
 (c-lang-defconst c-modifier-kwds
   ctads nil)
@@ -295,7 +295,7 @@ expressions."
 
 (c-lang-defconst c-other-kwds
   "Keywords not accounted for by any other `*-kwds' language constant."
-  ctads '("token" "property" "local" "enum" "transient" "static" "intrinsic"))
+  ctads '("token" "property" "local" "enum" "static" "intrinsic"))
 
 (defcustom ctads-prettify-multiline-strings t
   "*Whether to treat multiline strings as blocks of text,
