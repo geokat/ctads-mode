@@ -157,6 +157,12 @@ multiline string, aligning on the opening quote."
 (c-lang-defconst c-class-decl-kwds
   ctads '("class" "object" "modify" "replace"))
 
+(c-lang-defconst c-class-key
+  ;; Regexp matching the start of a class.
+  ctads (concat
+         (c-make-keywords-re nil (c-lang-const c-class-decl-kwds))
+         "\\|\\+*"))
+
 (c-lang-defconst c-recognize-colon-labels
   ctads t)
 
