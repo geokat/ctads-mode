@@ -86,6 +86,16 @@ format them to look nice in code, with paragraphs and alignment."
             nil
           ad-do-it)))
 
+;; Wrap c-beginning-of-statement-1: turn off label search at top
+;; (declaration) level.
+(defadvice c-beginning-of-statement-1
+    (around ctads-beginning-of-statement-1-advice
+            activate preactivate)
+  (if (equal major-mode 'ctads-mode)
+      ;; ignore-labels is an argument of c-beginning-of-statement-1.
+      (setq ignore-labels (c-at-toplevel-p)))
+  ad-do-it)
+
 (defun ctads-string-fill-prefix ()
   "Build the fill prefix for a continuing line in a multiline
 string. The prefix consists of spaces, so that lines in multiline
