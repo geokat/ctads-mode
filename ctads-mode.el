@@ -340,11 +340,21 @@ enabling auto-fill, indentation and paragraph formatting."
                 (me1 (match-end 1)))
             (unless
                 (c-skip-comments-and-strings limit)
-              (and (c-at-toplevel-p)
-                   (not (get-text-property mb1 'face))
-                   (c-put-font-lock-face mb1 me1
-                                         font-lock-variable-name-face)))))))
-    ))
+              (if (and (c-at-toplevel-p)
+                       (not (get-text-property mb1 'face)))
+                  (progn
+                    (c-put-font-lock-face
+                     mb1 me1 font-lock-variable-name-face)
+                    ;; Fontify the inherit type list (e.g. \"Foo\" and
+                    ;; \"Bar\" in \"myObject: Foo, Bar { ... }\").
+                    (while
+                        (and (memq (char-before) '(?: ?,))
+                             (skip-chars-forward " \n\r\t")
+                             (looking-at
+                              "\\([[:alpha:]_]+[[:alnum:]_]*\\)[ \n\r\t]*\\([,{]\\)"))
+                      (c-put-font-lock-face (match-beginning 1) (match-end 1)
+                                            font-lock-type-face)
+                      (goto-char (match-end 2))))))))))))
 
 (defconst ctads-font-lock-keywords-1 (c-lang-const c-matchers-1 ctads)
   "Minimal highlighting for CTADS mode.")
