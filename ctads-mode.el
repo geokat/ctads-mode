@@ -352,12 +352,15 @@ enabling auto-fill, indentation and paragraph formatting."
                     (c-put-font-lock-face
                      mb1 me1 font-lock-variable-name-face)
                     ;; Fontify the inherit type list (e.g. \"Foo\" and
-                    ;; \"Bar\" in \"myObject: Foo, Bar { ... }\").
+                    ;; \"Bar\" in \"myObject: Foo, Bar { ... }\").  We
+                    ;; also look out for 'templated' object defs
+                    ;; (which usually have a 'string' and/or @location
+                    ;; following the inherit list).
                     (while
                         (and (memq (char-before) '(?: ?,))
                              (skip-chars-forward " \n\r\t")
                              (looking-at
-                              "\\([[:alpha:]_]+[[:alnum:]_]*\\)[ \n\r\t]*\\([,{]\\)"))
+                              "\\([[:alpha:]_]+[[:alnum:]_]*\\)[ \n\r\t]*\\([,{'@]\\)"))
                       (c-put-font-lock-face (match-beginning 1) (match-end 1)
                                             font-lock-type-face)
                       (goto-char (match-end 2))))))))))))
