@@ -18,13 +18,25 @@ is current at this time.
 
 Put ctads-mode.el somewhere in your load path, optionally byte-compile
 it, and add the following to your .emacs file:
+
 ```elisp
 (autoload 'ctads-mode "ctads-mode" "Major mode for editing TADS3 code" t)
 (add-to-list 'auto-mode-alist '("\\.t$" . ctads-mode))
 ```
- You can disable ctads-mode's handling of multiline strings by
- putting something like this in your .emacs file:
+
+You can disable ctads-mode's handling of multiline strings by
+putting something like this in your .emacs file:
 
 ```elisp
 (setq ctads-prettify-multiline-strings nil)
 ```
+
+There's a bug in Emacs 24.4 that breaks cc-mode derived modes. On
+loading the mode, it may give the following error:
+
+`Eager macro-expansion failure: (void-function cl-macroexpand-all)`
+
+To work around it, add the following line to your .emacs, somewhere
+before the ctads-mode autoload:
+
+`(require 'cl)`
